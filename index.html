@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EasyPay Demo | Sit Naing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>EasyPay <span>Demo</span></h1>
+  <p>Send Money Home Fast & Securely</p>
+</header>
+
+<section class="container">
+  <div class="left">
+    <h2>Send Money Home</h2>
+    <p class="rate">1 THB = <b>125 MMK</b></p>
+
+    <div class="steps">
+      <div>① Fill Details</div>
+      <div>② Transfer (Demo)</div>
+      <div>③ Receive (Demo)</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <h3>Money Transfer (Demo)</h3>
+
+    <label>Recipient Wallet</label>
+    <select>
+      <option>KPay</option>
+      <option>Wave Pay</option>
+      <option>CB Bank</option>
+    </select>
+
+    <label>Account / Phone</label>
+    <input type="text" placeholder="09xxxxxxxx">
+
+    <label>Send Amount (THB)</label>
+    <input type="number" id="thb" value="1000">
+
+    <label>Receive Amount (MMK)</label>
+    <input type="text" id="mmk" readonly>
+
+    <button onclick="demoTransfer()">Confirm Transfer</button>
+
+    <p class="demo-note">
+      ⚠️ Demo only. No real money transfer.
+    </p>
+  </div>
+</section>
+
+<section class="about">
+  <h2>About This Project</h2>
+  <p>
+    This is a UI/UX demo created for portfolio purposes.
+    It demonstrates how a remittance platform may look.
+  </p>
+</section>
+
+<footer>
+  © 2026 Sit Naing | Demo Project
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
