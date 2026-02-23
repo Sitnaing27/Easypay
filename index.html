@@ -1,69 +1,806 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
-  <meta charset="UTF-8">
-  <title>EasyPay Demo | Sit Naing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Pay — မြန်မာငွေလွဲ</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+Myanmar:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #050b14;
+  --surface:  #080f1c;
+  --card:     #0c1525;
+  --card2:    #101d30;
+  --border:   rgba(0,190,255,0.12);
+  --cyan:     #00bfff;
+  --cyan2:    #0090cc;
+  --green:    #00e5a0;
+  --green2:   #00b87a;
+  --gold:     #ffcc44;
+  --red:      #ff4f6a;
+  --text:     #e0f0ff;
+  --muted:    #3d5a7a;
+  --muted2:   #5a7a9a;
+  --radius:   16px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── GRID BG ── */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,190,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,190,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.grid-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,120,200,0.12) 0%,transparent 60%);
+}
+
+/* ── SCAN LINE ── */
+.scan{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.scan::after{
+  content:'';position:absolute;
+  left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,190,255,0.3),transparent);
+  animation:scan 8s linear infinite;
+  top:-2px;
+}
+@keyframes scan{from{top:-2px;}to{top:100vh;}}
+
+/* ── WRAP ── */
+.wrap{
+  position:relative;z-index:1;
+  max-width:560px;
+  margin:0 auto;
+  padding:0 18px 100px;
+}
+
+/* ── HEADER ── */
+.header{
+  padding:40px 0 32px;
+  animation:fadeDown 0.7s ease both;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.logo-icon{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+  box-shadow:0 0 20px rgba(0,190,255,0.3);
+  flex-shrink:0;
+}
+.logo-text{
+  font-size:1.9rem;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  background:linear-gradient(135deg,#fff 30%,var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-sub{
+  font-size:0.72rem;
+  color:var(--muted2);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  margin-left:62px;
+  margin-top:-4px;
+}
+
+/* ── FLAG ROW ── */
+.flag-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 18px;
+  margin-bottom:24px;
+  animation:fadeUp 0.6s ease 0.1s both;
+}
+.flag-item{display:flex;align-items:center;gap:8px;flex:1;}
+.flag-emoji{font-size:1.6rem;line-height:1;}
+.flag-info{display:flex;flex-direction:column;}
+.flag-name{font-size:0.82rem;font-weight:700;color:var(--text);}
+.flag-curr{font-size:0.68rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;}
+.flag-arrow{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,rgba(0,190,255,0.15),rgba(0,190,255,0.05));
+  border:1px solid rgba(0,190,255,0.2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  color:var(--cyan);
+  flex-shrink:0;
+}
+
+/* ── RATE CARD ── */
+.rate-card{
+  background:linear-gradient(135deg,rgba(0,190,255,0.08),rgba(0,90,150,0.05));
+  border:1px solid rgba(0,190,255,0.2);
+  border-radius:var(--radius);
+  padding:20px 22px;
+  margin-bottom:20px;
+  animation:fadeUp 0.6s ease 0.15s both;
+  position:relative;
+  overflow:hidden;
+}
+.rate-card::before{
+  content:'';position:absolute;
+  top:-40px;right:-40px;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(0,190,255,0.08),transparent 70%);
+  border-radius:50%;
+}
+
+.rate-label{
+  font-size:0.68rem;text-transform:uppercase;
+  letter-spacing:0.12em;color:var(--muted2);margin-bottom:12px;
+}
+
+.rate-input-row{
+  display:flex;align-items:center;gap:10px;
+}
+.rate-prefix{
+  font-size:0.85rem;color:var(--muted2);white-space:nowrap;
+  flex-shrink:0;
+}
+.rate-input{
+  flex:1;
+  background:rgba(0,0,0,0.35);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px;
+  color:var(--cyan);
+  font-family:'Syne',sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  width:100%;
+  text-align:right;
+}
+.rate-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,190,255,0.1);}
+.rate-input::placeholder{color:var(--muted);}
+
+.rate-hint{
+  font-size:0.72rem;color:var(--muted2);
+  margin-top:8px;font-style:italic;
+}
+
+.rate-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,229,160,0.1);
+  border:1px solid rgba(0,229,160,0.2);
+  border-radius:20px;
+  padding:4px 12px;
+  font-size:0.72rem;
+  color:var(--green);
+  margin-top:8px;
+}
+.rate-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* ── CALCULATOR CARD ── */
+.calc-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  margin-bottom:20px;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+
+.calc-title{
+  font-size:0.7rem;text-transform:uppercase;
+  letter-spacing:0.14em;color:var(--muted2);
+  margin-bottom:20px;display:flex;align-items:center;gap:8px;
+}
+.calc-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+}
+
+/* amount input */
+.amount-group{margin-bottom:18px;}
+.input-label{
+  font-size:0.7rem;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--muted2);
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.input-label span{color:var(--cyan);font-size:0.8rem;}
+
+.amount-wrap{
+  position:relative;display:flex;align-items:center;
+}
+.amount-currency{
+  position:absolute;left:14px;
+  font-size:0.88rem;font-weight:700;
+  color:var(--muted2);pointer-events:none;
+}
+.amount-input{
+  width:100%;
+  background:rgba(0,0,0,0.4);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:14px 14px 14px 52px;
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  font-size:1.15rem;
+  font-weight:600;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.amount-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,190,255,0.08);}
+.amount-input::placeholder{color:var(--muted);}
+
+/* fee row */
+.fee-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:18px;
+}
+.fee-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted2);flex-shrink:0;}
+.fee-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.fee-chip{
+  background:none;
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:5px 12px;
+  color:var(--muted2);
+  font-family:'Syne',sans-serif;
+  font-size:0.75rem;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.fee-chip.active{
+  background:rgba(0,190,255,0.12);
+  border-color:var(--cyan);
+  color:var(--cyan);
+}
+
+/* ── RESULT ── */
+.result-box{
+  background:linear-gradient(135deg,rgba(0,229,160,0.07),rgba(0,190,255,0.04));
+  border:1px solid rgba(0,229,160,0.2);
+  border-radius:14px;
+  padding:22px 20px;
+  margin-top:4px;
+  transition:all 0.3s;
+  min-height:80px;
+}
+
+.result-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;
+}
+.result-row:last-child{margin-bottom:0;}
+
+.result-key{font-size:0.75rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.08em;}
+.result-val{
+  font-size:0.95rem;font-weight:700;
+  color:var(--text);text-align:right;
+}
+.result-val.highlight{
+  font-size:1.25rem;
+  background:linear-gradient(135deg,var(--green),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.result-val.sub{font-size:0.82rem;color:var(--muted2);font-weight:400;}
+
+.result-divider{
+  height:1px;
+  background:rgba(0,229,160,0.1);
+  margin:10px 0;
+}
+
+.result-main-label{
+  font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;
+  color:var(--green);margin-bottom:8px;
+}
+.result-kyat{
+  font-size:2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--green) 0%,#88ffcc 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.1;
+  letter-spacing:-0.5px;
+}
+.result-kyat-sub{
+  font-size:0.78rem;color:var(--muted2);
+  margin-top:3px;font-style:italic;
+}
+
+/* ── QUICK PRESETS ── */
+.preset-row{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-bottom:20px;
+  animation:fadeUp 0.6s ease 0.3s both;
+}
+.preset-btn{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 16px;
+  color:var(--muted2);
+  font-family:'Syne',sans-serif;
+  font-size:0.8rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  flex:1;text-align:center;
+}
+.preset-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ── HISTORY ── */
+.history-section{animation:fadeUp 0.6s ease 0.35s both;}
+.section-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.section-title{
+  font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted2);
+}
+.clear-hist{
+  background:none;border:none;
+  color:var(--muted);font-family:'Syne',sans-serif;
+  font-size:0.7rem;cursor:pointer;
+  transition:color 0.2s;
+}
+.clear-hist:hover{color:var(--red);}
+
+.history-list{display:flex;flex-direction:column;gap:10px;}
+
+.hist-item{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  animation:cardIn 0.3s ease;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hist-icon{
+  width:36px;height:36px;
+  background:rgba(0,190,255,0.08);
+  border:1px solid rgba(0,190,255,0.15);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.hist-body{flex:1;}
+.hist-thb{font-size:0.88rem;font-weight:700;color:var(--text);}
+.hist-kyat{font-size:0.78rem;color:var(--green);margin-top:2px;}
+.hist-meta{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.hist-del{
+  background:none;border:none;
+  color:var(--muted);font-size:0.85rem;
+  cursor:pointer;transition:color 0.2s;
+  padding:4px 8px;
+}
+.hist-del:hover{color:var(--red);}
+
+.empty-hist{
+  text-align:center;padding:30px;
+  color:var(--muted);font-size:0.82rem;
+  font-style:italic;display:none;
+}
+.empty-hist.show{display:block;}
+
+/* ── COPY TOAST ── */
+.toast{
+  position:fixed;bottom:30px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:rgba(0,229,160,0.15);
+  border:1px solid rgba(0,229,160,0.3);
+  backdrop-filter:blur(10px);
+  border-radius:30px;
+  padding:10px 22px;
+  font-size:0.82rem;color:var(--green);
+  transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── BREAKDOWN ── */
+.breakdown{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px 18px;
+  margin-top:14px;
+  display:none;
+}
+.breakdown.show{display:block;}
+.bd-title{
+  font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--muted2);margin-bottom:12px;
+}
+.bd-row{
+  display:flex;justify-content:space-between;
+  font-size:0.8rem;padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.bd-row:last-child{border-bottom:none;}
+.bd-key{color:var(--muted2);}
+.bd-val{color:var(--text);font-weight:600;}
+.bd-val.red{color:var(--red);}
+.bd-val.green{color:var(--green);}
+.bd-val.gold{color:var(--gold);}
+</style>
 </head>
 <body>
 
-<header class="topbar">
-  <h1>EasyPay <span>Demo</span></h1>
-  <p>Send Money Home Fast & Securely</p>
-</header>
+<div class="grid-bg"></div>
+<div class="scan"></div>
 
-<section class="container">
-  <div class="left">
-    <h2>Send Money Home</h2>
-    <p class="rate">1 THB = <b>125 MMK</b></p>
+<div class="wrap">
 
-    <div class="steps">
-      <div>① Fill Details</div>
-      <div>② Transfer (Demo)</div>
-      <div>③ Receive (Demo)</div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">💸</div>
+      <div class="logo-text">Easy Pay</div>
+    </div>
+    <div class="logo-sub">မြန်မာပြည်သို့ ငွေလွဲ · THB → MMK</div>
+  </div>
+
+  <!-- FLAG ROW -->
+  <div class="flag-row">
+    <div class="flag-item">
+      <div class="flag-emoji">🇹🇭</div>
+      <div class="flag-info">
+        <div class="flag-name">ထိုင်းနိုင်ငံ</div>
+        <div class="flag-curr">Thai Baht (THB)</div>
+      </div>
+    </div>
+    <div class="flag-arrow">→</div>
+    <div class="flag-item" style="justify-content:flex-end;text-align:right;">
+      <div class="flag-info" style="align-items:flex-end;">
+        <div class="flag-name">မြန်မာနိုင်ငံ</div>
+        <div class="flag-curr">Kyat (MMK)</div>
+      </div>
+      <div class="flag-emoji" style="margin-left:8px;">🇲🇲</div>
     </div>
   </div>
 
-  <div class="right">
-    <h3>Money Transfer (Demo)</h3>
+  <!-- RATE CARD -->
+  <div class="rate-card">
+    <div class="rate-label">⚡ ယနေ့ပေါက်ဈေး သတ်မှတ်ပါ</div>
+    <div class="rate-input-row">
+      <div class="rate-prefix">1 သိန်း (100,000 ကျပ်) =</div>
+      <input class="rate-input" type="number" id="rateInput"
+        placeholder="0" value="" min="1"
+        oninput="onRateChange()" />
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;">
+      <div class="rate-hint">ဘတ် (THB) ဘယ်လောက်ဒေါ်လည်း?</div>
+      <div class="rate-badge"><div class="rate-dot"></div> Live Rate</div>
+    </div>
+    <div id="ratePerBaht" style="margin-top:8px;font-size:0.78rem;color:var(--cyan);display:none;">
+      ∴ 1 ဘတ် = <span id="ratePerBahtVal">—</span> ကျပ်
+    </div>
 
-    <label>Recipient Wallet</label>
-    <select>
-      <option>KPay</option>
-      <option>Wave Pay</option>
-      <option>CB Bank</option>
-    </select>
-
-    <label>Account / Phone</label>
-    <input type="text" placeholder="09xxxxxxxx">
-
-    <label>Send Amount (THB)</label>
-    <input type="number" id="thb" value="1000">
-
-    <label>Receive Amount (MMK)</label>
-    <input type="text" id="mmk" readonly>
-
-    <button onclick="demoTransfer()">Confirm Transfer</button>
-
-    <p class="demo-note">
-      ⚠️ Demo only. No real money transfer.
-    </p>
+    <!-- Quick rate presets -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;">
+      <div style="font-size:0.68rem;color:var(--muted);align-self:center;margin-right:2px;">Quick:</div>
+      <button class="fee-chip" onclick="setQuickRate(85)">85 ဘတ်</button>
+      <button class="fee-chip" onclick="setQuickRate(90)">90 ဘတ်</button>
+      <button class="fee-chip" onclick="setQuickRate(95)">95 ဘတ်</button>
+      <button class="fee-chip" onclick="setQuickRate(100)">100 ဘတ်</button>
+    </div>
   </div>
-</section>
 
-<section class="about">
-  <h2>About This Project</h2>
-  <p>
-    This is a UI/UX demo created for portfolio purposes.
-    It demonstrates how a remittance platform may look.
-  </p>
-</section>
+  <!-- CALCULATOR CARD -->
+  <div class="calc-card">
+    <div class="calc-title">💱 တွက်ချက်မည်</div>
 
-<footer>
-  © 2026 Sit Naing | Demo Project
-</footer>
+    <!-- Amount -->
+    <div class="amount-group">
+      <div class="input-label"><span>฿</span> လွဲမည့် ဘတ်ပမာဏ</div>
+      <div class="amount-wrap">
+        <div class="amount-currency">฿</div>
+        <input class="amount-input" type="number" id="amountInput"
+          placeholder="0.00" min="0" step="0.01"
+          oninput="calculate()" />
+      </div>
+    </div>
 
-<script src="script.js"></script>
+    <!-- Fee -->
+    <div class="fee-row">
+      <div class="fee-label">ကင်းမြောက်ခ</div>
+      <div class="fee-chips" id="feeChips">
+        <button class="fee-chip active" onclick="setFee(0,this)">0%</button>
+        <button class="fee-chip" onclick="setFee(0.5,this)">0.5%</button>
+        <button class="fee-chip" onclick="setFee(1,this)">1%</button>
+        <button class="fee-chip" onclick="setFee(1.5,this)">1.5%</button>
+        <button class="fee-chip" onclick="setFee(2,this)">2%</button>
+      </div>
+    </div>
+
+    <!-- Result Box -->
+    <div class="result-box" id="resultBox">
+      <div style="text-align:center;color:var(--muted);font-size:0.82rem;font-style:italic;padding:8px 0;" id="resultPlaceholder">
+        ဘတ်ပမာဏ ထည့်ပါ ✦
+      </div>
+      <div id="resultContent" style="display:none;">
+        <div class="result-main-label">📥 ရရှိမည့် ကျပ်ပမာဏ</div>
+        <div class="result-kyat" id="resKyat">0 ကျပ်</div>
+        <div class="result-kyat-sub" id="resKyatWord"></div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-row">
+          <div class="result-key">📤 လွဲမည့် ဘတ်</div>
+          <div class="result-val" id="resThb">—</div>
+        </div>
+        <div class="result-row">
+          <div class="result-key">💱 ပေါက်ဈေး</div>
+          <div class="result-val sub" id="resRate">—</div>
+        </div>
+        <div class="result-row" id="resFeeRow">
+          <div class="result-key">➖ ကင်းမြောက်ခ</div>
+          <div class="result-val sub" id="resFee">—</div>
+        </div>
+        <div class="result-row">
+          <div class="result-key">✅ အသားတင် ဘတ်</div>
+          <div class="result-val" id="resNet">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="breakdown" id="breakdown">
+      <div class="bd-title">📊 အသေးစိတ် ခွဲခြမ်းစိတ်ဖြာချက်</div>
+      <div id="bdRows"></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;" id="actionBtns">
+      <button onclick="copyResult()" style="background:rgba(0,190,255,0.1);border:1.5px solid rgba(0,190,255,0.25);border-radius:10px;padding:11px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;" onmouseover="this.style.background='rgba(0,190,255,0.18)'" onmouseout="this.style.background='rgba(0,190,255,0.1)'">
+        📋 ကူးယူမည်
+      </button>
+      <button onclick="saveToHistory()" style="background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(0,190,255,0.08));border:1.5px solid rgba(0,229,160,0.25);border-radius:10px;padding:11px;color:var(--green);font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+        💾 မှတ်တမ်းသိမ်းမည်
+      </button>
+    </div>
+  </div>
+
+  <!-- QUICK PRESETS -->
+  <div style="margin-bottom:6px;font-size:0.68rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;animation:fadeUp 0.6s ease 0.28s both;">⚡ မြန်ဆန်ရွေးချယ်မှု</div>
+  <div class="preset-row">
+    <button class="preset-btn" onclick="setPreset(1000)">1,000 ฿</button>
+    <button class="preset-btn" onclick="setPreset(2000)">2,000 ฿</button>
+    <button class="preset-btn" onclick="setPreset(5000)">5,000 ฿</button>
+    <button class="preset-btn" onclick="setPreset(10000)">10,000 ฿</button>
+  </div>
+ <!-- HISTORY -->
+  <div class="history-section">
+    <div class="section-bar">
+      <div class="section-title">🕐 မှတ်တမ်းများ</div>
+      <button class="clear-hist" onclick="clearHistory()">အားလုံး ဖျက်မည်</button>
+    </div>
+    <div class="history-list" id="histList"></div>
+    <div class="empty-hist" id="emptyHist">မှတ်တမ်းမရှိသေးပါ</div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+let feePercent = 0;
+let history = JSON.parse(localStorage.getItem('epHistory') || '[]');
+let lastCalc = null;
+let savedRate = localStorage.getItem('epRate') || '';
+
+// ── INIT ──
+window.onload = () => {
+  if (savedRate) {
+    document.getElementById('rateInput').value = savedRate;
+    onRateChange();
+  }
+  renderHistory();
+};
+
+// ── RATE ──
+function onRateChange() {
+  const val = parseFloat(document.getElementById('rateInput').value);
+  if (val > 0) {
+    localStorage.setItem('epRate', val);
+    const perBaht = 100000 / val;
+    document.getElementById('ratePerBaht').style.display = 'block';
+    document.getElementById('ratePerBahtVal').textContent = fmt(perBaht);
+    savedRate = val;
+  } else {
+    document.getElementById('ratePerBaht').style.display = 'none';
+  }
+  calculate();
+}
+
+function setQuickRate(r) {
+  document.getElementById('rateInput').value = r;
+  onRateChange();
+}
+
+// ── FEE ──
+function setFee(pct, btn) {
+  feePercent = pct;
+  document.querySelectorAll('.fee-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  calculate();
+}
+
+// ── PRESET ──
+function setPreset(val) {
+  document.getElementById('amountInput').value = val;
+  calculate();
+}
+
+// ── CALCULATE ──
+function calculate() {
+  const rate = parseFloat(document.getElementById('rateInput').value);  // e.g. 90 THB per 100,000 MMK
+  const amount = parseFloat(document.getElementById('amountInput').value);
+
+  const ph = document.getElementById('resultPlaceholder');
+  const rc = document.getElementById('resultContent');
+
+  if (!rate || rate <= 0 || !amount || amount <= 0) {
+    ph.style.display = 'block';
+    rc.style.display = 'none';
+    document.getElementById('breakdown').classList.remove('show');
+    lastCalc = null;
+    return;
+  }
+  // Calculate: rate = THB per 100,000 MMK
+  // so 1 THB = 100000/rate MMK
+  const mmkPer1Thb = 100000 / rate;
+  const feeAmt = amount * (feePercent / 100);
+  const netThb = amount - feeAmt;
+  const kyatAmount = netThb * mmkPer1Thb;
+
+  lastCalc = { rate, amount, feePercent, feeAmt, netThb, kyatAmount, mmkPer1Thb };
+
+  // Show result
+  ph.style.display = 'none';
+  rc.style.display = 'block';
+
+  document.getElementById('resKyat').textContent = fmtKyat(kyatAmount) + ' ကျပ်';
+  document.getElementById('resKyatWord').textContent = kyatToWord(kyatAmount);
+  document.getElementById('resThb').textContent = fmt(amount) + ' ฿';
+  document.getElementById('resRate').textContent = fmt(rate) + ' ฿ = ၁ သိန်း (1 MMK = ' + fmt(mmkPer1Thb, 2) + ' ฿)';
+
+  if (feePercent > 0) {
+    document.getElementById('resFeeRow').style.display = 'flex';
+    document.getElementById('resFee').textContent = '-' + fmt(feeAmt, 2) + ' ฿ (' + feePercent + '%)';
+  } else {
+    document.getElementById('resFeeRow').style.display = 'none';
+  }
+  document.getElementById('resNet').textContent = fmt(netThb, 2) + ' ฿';
+
+  // Breakdown
+  renderBreakdown(amount, rate, feeAmt, netThb, kyatAmount, mmkPer1Thb);
+}
+
+function renderBreakdown(amount, rate, feeAmt, netThb, kyat, mmkPer1Thb) {
+  const bd = document.getElementById('breakdown');
+  bd.classList.add('show');
+  const lakh = kyat / 100000;
+  const kPay = kyat / 1000000;
+  document.getElementById('bdRows').innerHTML = `
+    <div class="bd-row"><div class="bd-key">လွဲမည့် ဘတ်</div><div class="bd-val">${fmt(amount,2)} ฿</div></div>
+    <div class="bd-row"><div class="bd-key">ကင်းမြောက်ခ (${feePercent}%)</div><div class="bd-val red">${feeAmt>0?'-'+fmt(feeAmt,2)+' ฿':'မရှိ'}</div></div>
+    <div class="bd-row"><div class="bd-key">အသားတင် ဘတ်</div><div class="bd-val">${fmt(netThb,2)} ฿</div></div>
+    <div class="bd-row"><div class="bd-key">ပေါက်ဈေး (၁ THB = ? MMK)</div><div class="bd-val gold">${fmt(mmkPer1Thb)} ကျပ်</div></div>
+    <div class="bd-row"><div class="bd-key">ရရှိမည့် ကျပ်</div><div class="bd-val green">${fmtKyat(kyat)} ကျပ်</div></div>
+    <div class="bd-row"><div class="bd-key">≈ သိန်းဖြင့်</div><div class="bd-val green">${fmt(lakh,2)} သိန်း</div></div>
+    <div class="bd-row"><div class="bd-key">≈ ကျပ်သန်းဖြင့်</div><div class="bd-val green">${fmt(kPay,4)} သန်း</div></div>
+  `;
+}
+
+// ── COPY ──
+function copyResult() {
+  if (!lastCalc) { showToast('ကျေးဇူးပြု၍ ပမာဏ ထည့်ပါ'); return; }
+  const { amount, rate, feePercent, feeAmt, netThb, kyatAmount, mmkPer1Thb } = lastCalc;
+  const text = `💸 Easy Pay မှတ်တမ်း\n━━━━━━━━━━━━━━\nလွဲမည့် ဘတ် : ${fmt(amount,2)} ฿\nကင်းမြောက်ခ : ${feePercent}% (${fmt(feeAmt,2)} ฿)\nအသားတင် ဘတ် : ${fmt(netThb,2)} ฿\nပေါက်ဈေး : ${fmt(rate)} ฿ = ၁ သိန်း\nရရှိမည့် ကျပ် : ${fmtKyat(kyatAmount)} ကျပ်\n━━━━━━━━━━━━━━`;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 ကူးယူပြီး!')).catch(() => showToast('ကူးမရပါ'));
+}
+
+// ── SAVE HISTORY ──
+function saveToHistory() {
+  if (!lastCalc) { showToast('ကျေးဇူးပြု၍ ပမာဏ ထည့်ပါ'); return; }
+  const { amount, rate, feePercent, kyatAmount } = lastCalc;
+  history.unshift({
+    id: Date.now(),
+    amount, rate, feePercent, kyatAmount,
+    time: new Date().toLocaleString('en-GB',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})
+  });
+  if (history.length > 20) history.pop();
+  localStorage.setItem('epHistory', JSON.stringify(history));
+  renderHistory();
+  showToast('💾 မှတ်တမ်း သိမ်းဆည်းပြီး!');
+}
+
+function deleteHistItem(id) {
+  history = history.filter(h => h.id !== id);
+  localStorage.setItem('epHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (!history.length) return;
+  if (!confirm('မှတ်တမ်းအားလုံး ဖျက်မည်လား?')) return;
+  history = [];
+  localStorage.setItem('epHistory','[]');
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('histList');
+  const empty = document.getElementById('emptyHist');
+  empty.className = 'empty-hist' + (history.length===0?' show':'');
+  list.innerHTML = history.map(h => `
+    <div class="hist-item">
+      <div class="hist-icon">💸</div>
+      <div class="hist-body">
+        <div class="hist-thb">${fmt(h.amount,2)} ฿ ${h.feePercent>0?'<span style="font-size:0.72rem;color:var(--muted);">('+h.feePercent+'% ကင်းမြောက်ခ)</span>':''}</div>
+        <div class="hist-kyat">→ ${fmtKyat(h.kyatAmount)} ကျပ်</div>
+        <div class="hist-meta">ပေါက်ဈေး: ${fmt(h.rate)} ฿/သိန်း · ${h.time}</div>
+      </div>
+      <button class="hist-del" onclick="deleteHistItem(${h.id})">✕</button>
+    </div>`).join('');
+}
+
+// ── UTILS ──
+function fmt(n, dec=0) {
+  if (!n && n!==0) return '—';
+  return Number(n).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+}
+
+function fmtKyat(n) {
+  if (!n) return '0';
+  return Math.round(n).toLocaleString('en-US');
+}
+
+function kyatToWord(n) {
+  if (!n) return '';
+  const lakh = n / 100000;
+  const million = n / 1000000;
+  if (n >= 1000000) return '≈ ' + fmt(million, 2) + ' ကျပ်သန်း';
+  if (n >= 100000)  return '≈ ' + fmt(lakh, 2) + ' သိန်း';
+  return '';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
 </body>
 </html>
+  
